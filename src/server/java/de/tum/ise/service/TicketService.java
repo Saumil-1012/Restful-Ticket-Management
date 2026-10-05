@@ -13,35 +13,43 @@ public class TicketService {
     private long nextId = 1L;
 
     public List<Ticket> getAllTickets() {
-
-        // TODO 1.2: Return a list containing all stored tickets (a copy, not a reference to internal storage).
-        return null;
+        // 1.2: return a COPY, not the internal list
+        return new ArrayList<>(tickets);
     }
 
     public Optional<Ticket> findTicketById(Long ticketId) {
-        // TODO 1.1: Iterate through the tickets list to look up the ticket with the given ID and return it wrapped in an Optional.
-
+        // 1.1: iterate and wrap in Optional
+        for (Ticket t : tickets) {
+            if (t.getId().equals(ticketId)) {
+                return Optional.of(t);
+            }
+        }
         return Optional.empty();
     }
 
     public Ticket saveTicket(Ticket ticket) {
         if (ticket.getId() == null) {
-            // TODO 1.1: Handle the creation of a new ticket.
-            // Assign the current value of nextId, increment nextId, store the ticket, and return it.
-
-
-            return null;
+            // 1.1: create -> assign sequential ID, store, return
+            ticket.setId(nextId++);
+            tickets.add(ticket);
+            return ticket;
         } else {
-            // TODO 1.3: Handle the update of an existing ticket.
-            // Locate the ticket by its ID, update all its fields, and return it.
-
-
-            return null;
+            // 1.3: update -> find existing, copy all fields; null if it does not exist
+            Optional<Ticket> existing = findTicketById(ticket.getId());
+            if (existing.isEmpty()) {
+                return null;
+            }
+            Ticket stored = existing.get();
+            stored.setTitle(ticket.getTitle());
+            stored.setDescription(ticket.getDescription());
+            stored.setPriority(ticket.getPriority());
+            stored.setStatus(ticket.getStatus());
+            return stored;
         }
     }
 
     public void deleteTicket(Long ticketId) {
-        // TODO 1.4: Remove the ticket with the given ID from the list.
-
+        // 1.4: remove by ID
+        tickets.removeIf(t -> t.getId().equals(ticketId));
     }
 }
